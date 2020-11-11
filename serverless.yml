@@ -9,7 +9,6 @@ frameworkVersion: '2'
 provider:
     name: aws
     runtime: nodejs12.x
-    profile: personal
 
     environment:
         DYNAMODB_TABLE_TASKS: ${self:service}-tasks-${self:provider.stage}
