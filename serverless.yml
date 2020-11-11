@@ -1,0 +1,50 @@
+service: todo-list-server
+app: todo-list-server
+org: jacquesblom
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '2'
+
+provider:
+    name: aws
+    runtime: nodejs12.x
+    profile: personal
+
+    environment:
+        DYNAMODB_TABLE_TASKS: ${self:service}-tasks-${self:provider.stage}
+
+    iamRoleStatements:
+        - Effect: Allow
+          Action:
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:PutItem
+          Resource:
+              - {'Fn::GetAtt': ['DynamoDBTasks', 'Arn']}
+
+functions:
+    get-tasks:
+        handler: handlers/get-tasks.handler
+        events:
+            - http:
+                  path: tasks
+                  method: get
+        environment:
+            DYNAMODB_TABLE_TASKS: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
+
+resources:
+    Resources:
+        DynamoDBTasks:
+            Type: 'AWS::DynamoDB::Table'
+            Properties:
+                AttributeDefinitions:
+                    - AttributeName: userId
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: userId
+                      KeyType: HASH
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 1
+                    WriteCapacityUnits: 1
+                TableName: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
