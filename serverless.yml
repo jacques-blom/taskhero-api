@@ -1,5 +1,5 @@
-service: todo-list-server
-app: todo-list-server
+service: taskhero-api
+app: taskhero-api
 org: jacquesblom
 
 # You can pin your service to only deploy with a specific Serverless version
