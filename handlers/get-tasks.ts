@@ -19,7 +19,7 @@ const getTasks = async (userId: string) => {
 
 export const handler = async (event: any) => {
     try {
-        const userId = event.queryStringParameters.userId
+        const userId = event.queryStringParameters?.userId
         if (!userId) throw new Error('Not found')
 
         const body = await getTasks(userId)

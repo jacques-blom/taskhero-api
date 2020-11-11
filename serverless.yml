@@ -5,6 +5,8 @@ org: jacquesblom
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: '2'
+plugins:
+    - serverless-plugin-typescript
 
 provider:
     name: aws
