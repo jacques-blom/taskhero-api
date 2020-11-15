@@ -33,6 +33,14 @@ functions:
                   method: get
         environment:
             DYNAMODB_TABLE_TASKS: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
+    insert-task:
+        handler: handlers/insert-task.handler
+        events:
+            - http:
+                  path: tasks
+                  method: post
+        environment:
+            DYNAMODB_TABLE_TASKS: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
 
 resources:
     Resources:
