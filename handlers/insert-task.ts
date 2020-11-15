@@ -30,6 +30,9 @@ const insertTask = async ({userId, label}: TaskInput) => {
 }
 
 export const handler = async (event: any) => {
+    console.log('Invoke insert-task')
+    console.log(event)
+
     try {
         if (!event.body) throw new Error('Missing body')
 
@@ -51,6 +54,9 @@ export const handler = async (event: any) => {
             return {
                 statusCode: 500,
                 body: error.message,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
             }
         }
 
