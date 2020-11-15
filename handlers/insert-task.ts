@@ -46,6 +46,8 @@ export const handler = async (event: any) => {
         }
     } catch (error) {
         if (error.message) {
+            console.error(error)
+
             return {
                 statusCode: 500,
                 body: error.message,
