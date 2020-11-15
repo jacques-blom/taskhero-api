@@ -21,6 +21,7 @@ provider:
               - dynamodb:GetItem
               - dynamodb:UpdateItem
               - dynamodb:PutItem
+              - dynamodb:Query
           Resource:
               - {'Fn::GetAtt': ['DynamoDBTasks', 'Arn']}
 
