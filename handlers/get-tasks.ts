@@ -1,4 +1,5 @@
 import {DynamoDB} from 'aws-sdk'
+import {APIGatewayEvent} from 'aws-lambda'
 
 const dynamoDB = new DynamoDB.DocumentClient()
 
@@ -17,7 +18,7 @@ const getTasks = async (userId: string) => {
     return state.Items || []
 }
 
-export const handler = async (event: any) => {
+export const handler = async (event: APIGatewayEvent) => {
     try {
         const userId = event.queryStringParameters?.userId
         if (!userId) throw new Error('Not found')

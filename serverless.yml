@@ -43,6 +43,18 @@ functions:
                   method: post
         environment:
             DYNAMODB_TABLE_TASKS: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
+    update-task:
+        handler: handlers/update-task.handler
+        events:
+            - http:
+                  path: task/{id}
+                  method: post
+                  request:
+                      parameters:
+                          paths:
+                              id: true
+        environment:
+            DYNAMODB_TABLE_TASKS: ${self:provider.environment.DYNAMODB_TABLE_TASKS}
 
 resources:
     Resources:

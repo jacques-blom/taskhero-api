@@ -1,41 +1,56 @@
-import {DynamoDB} from 'aws-sdk'
-import {v4} from 'uuid'
 import {APIGatewayEvent} from 'aws-lambda'
+import {DynamoDB} from 'aws-sdk'
+import {bool} from 'aws-sdk/clients/signer'
+import {v4} from 'uuid'
 
 const dynamoDB = new DynamoDB.DocumentClient()
 
 type TaskInput = {
-    userId: string
-    label: string
+    id: string
+    completed: bool
 }
 
-const insertTask = async ({userId, label}: TaskInput) => {
-    if (!userId) throw new Error('Missing userId')
-    if (!label) throw new Error('Missing label')
+const updateTask = async (id: string, {completed}: TaskInput) => {
+    if (!id) throw new Error('Missing id')
+    if (completed == null) throw new Error('Missing completed')
 
-    const newTask = {
-        id: v4(),
-        userId,
-        label,
-        completed: false,
-    }
-
-    await dynamoDB
-        .put({
+    const task = await dynamoDB
+        .get({
             TableName: process.env.DYNAMODB_TABLE_TASKS!,
-            Item: newTask,
+            Key: {id},
+            ProjectionExpression: 'id',
         })
         .promise()
 
-    return newTask
+    if (!task.Item) throw new Error('Task not found')
+
+    await dynamoDB
+        .update({
+            TableName: process.env.DYNAMODB_TABLE_TASKS!,
+            Key: {id},
+            AttributeUpdates: {
+                completed: {Value: completed},
+            },
+        })
+        .promise()
+
+    const updatedTask = await dynamoDB
+        .get({
+            TableName: process.env.DYNAMODB_TABLE_TASKS!,
+            Key: {id},
+        })
+        .promise()
+
+    return updatedTask.Item
 }
 
 export const handler = async (event: APIGatewayEvent) => {
     try {
         if (!event.body) throw new Error('Missing body')
+        if (!event.pathParameters?.id) throw new Error('Missing id')
 
         const task = JSON.parse(event.body)
-        const body = await insertTask(task)
+        const body = await updateTask(event.pathParameters.id, task)
 
         return {
             statusCode: 200,
