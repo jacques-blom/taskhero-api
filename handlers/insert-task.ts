@@ -45,16 +45,14 @@ export const handler = async (event: any) => {
             },
         }
     } catch (error) {
-        if (error.message) {
-            console.error(error)
+        console.error(error)
 
+        if (error.message) {
             return {
                 statusCode: 500,
                 body: error.message,
             }
         }
-
-        console.error(error)
 
         return {
             statusCode: 500,
