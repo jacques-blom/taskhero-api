@@ -37,7 +37,7 @@ export const handler = async (event: APIGatewayEvent) => {
         if (error.message === 'Not found') {
             return {
                 statusCode: 404,
-                body: error.message,
+                body: JSON.stringify({message: error.message}),
             }
         }
 
@@ -45,7 +45,7 @@ export const handler = async (event: APIGatewayEvent) => {
 
         return {
             statusCode: 500,
-            body: 'Internal Server Error',
+            body: JSON.stringify({message: 'Internal Server Error'}),
             headers: {
                 'Access-Control-Allow-Origin': '*',
             },
